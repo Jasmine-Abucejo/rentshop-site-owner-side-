@@ -3,6 +3,11 @@ import { Box, Image, Text, HStack, Button } from "@chakra-ui/react";
 
 const RequestCard = ({ client }) => {
   const product = client.products[0];
+  const dateObj = new Date(client.createdAt);
+  const formattedDate = `${String(dateObj.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(dateObj.getDate()).padStart(2, "0")}-${dateObj.getFullYear()}`;
   return (
     <Box borderWidth={"2px"} p={"4"} borderColor={"pink.400"}>
       <Image src={product.image} />
@@ -34,7 +39,7 @@ const RequestCard = ({ client }) => {
       <Text fontWeight={"bold"}>
         Request sent on:{" "}
         <Text as={"span"} fontWeight={"normal"}>
-          {client.createdAt}
+          {formattedDate}
         </Text>
       </Text>
       <HStack>
