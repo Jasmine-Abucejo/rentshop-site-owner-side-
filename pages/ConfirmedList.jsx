@@ -23,7 +23,7 @@ const ConfirmedList = () => {
             ) : null
           )
         ) : (
-          <Text>No clients in the list yet</Text>
+          <Text color={"pink.400"}>No clients in the list yet</Text>
         )}
       </Grid>
     </Box>
