@@ -3,11 +3,19 @@ import { Box, Image, Text, HStack, Button } from "@chakra-ui/react";
 
 const RequestCard = ({ client, confirmRequest }) => {
   const product = client.products[0];
-  const dateObj = new Date(client.createdAt);
-  const formattedDate = `${String(dateObj.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(dateObj.getDate()).padStart(2, "0")}-${dateObj.getFullYear()}`;
+  const dateSent = new Date(client.createdAt);
+  const requestDate = new Date(client.dateNeeded);
+  const formatDate = (dateObj) => {
+    const formattedDate = dateObj.toLocaleDateString("en-US", {
+      weekday: "long", // Monday
+      year: "numeric", // 2020
+      month: "long", // August
+      day: "numeric", // 11
+    });
+
+    return formattedDate;
+  };
+
   return (
     <Box borderWidth={"2px"} p={"4"} borderColor={"pink.400"}>
       <Image src={product.image} />
@@ -20,7 +28,7 @@ const RequestCard = ({ client, confirmRequest }) => {
       <Text fontWeight={"bold"} color={"pink.400"}>
         Request for:{" "}
         <Text as="span" fontWeight={"normal"} color={"pink.400"}>
-          {client.dateNeeded}
+          {formatDate(requestDate)}
         </Text>
       </Text>
 
@@ -39,7 +47,7 @@ const RequestCard = ({ client, confirmRequest }) => {
       <Text fontWeight={"bold"} color={"pink.400"}>
         Request sent on:{" "}
         <Text as={"span"} fontWeight={"normal"} color={"pink.400"}>
-          {formattedDate}
+          {formatDate(dateSent)}
         </Text>
       </Text>
       <HStack>
