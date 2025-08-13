@@ -1,22 +1,54 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Text, Icon, Input } from "@chakra-ui/react";
+import { Box, Text, Icon, Input, Button } from "@chakra-ui/react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useProductStore } from "../store/productStore";
 
 const ModalDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(id);
+  console.log("useParams id:", JSON.stringify(id), "length:", id?.length);
   const closeModal = () => {
     navigate(-1);
   };
   const client = useProductStore((state) => state.client);
   const fetchClient = useProductStore((state) => state.fetchClient);
-  let product;
-  if (client) {
-    product = client.products[0];
-  }
+  const confirmClient = useProductStore((state) => state.confirmClient);
+
+  const [updateClient, setUpdateClient] = useState({
+    _id: id,
+    firstName: "",
+    lastName: "",
+    mobile: "",
+    dateNeeded: "",
+    status: "confirmed",
+    returnDate: "",
+    products: "",
+  });
+  const [product, setProduct] = useState("");
+  useEffect(() => {
+    if (id) {
+      fetchClient(id);
+    }
+  }, [id, fetchClient]);
+
+  useEffect(() => {
+    if (client) {
+      setProduct(client.products[0]);
+      // product = client.products?.[0];
+      setUpdateClient({
+        _id: client._id,
+        firstName: client.firstName,
+        lastName: client.lastName,
+        mobile: client.mobile,
+        dateNeeded: client.dateNeeded,
+        status: "confirmed",
+        returnDate: "",
+        products: product,
+      });
+    }
+  }, [client, id]);
+
   // console.log(client.products);
   const requestDate = new Date(client?.dateNeeded);
   const formatDate = (dateObj) => {
@@ -30,12 +62,17 @@ const ModalDetails = () => {
     return formattedDate;
   };
 
-  useEffect(() => {
-    if (id) {
-      fetchClient(id);
+  const saveConfirmation = async () => {
+    if (!updateClient) {
+      console.warn("Client data not ready yet.");
+      return;
     }
-  }, [id]);
-  console.log(client);
+
+    const { success, message } = await confirmClient(id, updateClient);
+    console.log("Confirmation result:", success, message);
+    console.log("Data sent:", updateClient);
+  };
+
   return (
     <Box
       position={"fixed"}
@@ -87,7 +124,7 @@ const ModalDetails = () => {
             <Text fontWeight={"bold"}>
               Requested Item:{" "}
               <Text as={"span"} fontWeight={"normal"}>
-                {product?.productName}
+                {product.productName}
               </Text>
             </Text>
             <Text fontWeight={"bold"}>
@@ -109,7 +146,26 @@ const ModalDetails = () => {
               </Text>
             </Text>
             <Text fontWeight={"bold"}>Set Return Date: </Text>
-            <Input placeholder="Select Return Date" size="md" type="date" />
+            <Input
+              placeholder="Select Return Date"
+              size="md"
+              type="date"
+              value={updateClient.returnDate}
+              onChange={(e) => {
+                setUpdateClient({
+                  ...updateClient,
+                  returnDate: e.target.value,
+                });
+              }}
+            />
+            <Button
+              onClick={() => {
+                console.log("clicked");
+                saveConfirmation();
+              }}
+            >
+              Confirm
+            </Button>
           </Box>
         </Box>
       )}
