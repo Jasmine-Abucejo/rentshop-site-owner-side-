@@ -7,13 +7,16 @@ import { useProductStore } from "../store/productStore";
 const ModalDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log("useParams id:", JSON.stringify(id), "length:", id?.length);
+  // console.log("useParams id:", JSON.stringify(id), "length:", id?.length);
   const closeModal = () => {
     navigate(-1);
   };
   const client = useProductStore((state) => state.client);
   const fetchClient = useProductStore((state) => state.fetchClient);
   const confirmClient = useProductStore((state) => state.confirmClient);
+  const setProductReservation = useProductStore(
+    (state) => state.setProductReservation
+  );
 
   const [updateClient, setUpdateClient] = useState({
     _id: id,
@@ -25,7 +28,8 @@ const ModalDetails = () => {
     returnDate: "",
     products: "",
   });
-  const [product, setProduct] = useState("");
+  const [product, setProduct] = useState({});
+  // const [reservationDates, setReservationDates] = useState([]);
   useEffect(() => {
     if (id) {
       fetchClient(id);
@@ -34,8 +38,21 @@ const ModalDetails = () => {
 
   useEffect(() => {
     if (client) {
-      setProduct(client.products[0]);
-      // product = client.products?.[0];
+      const firstProduct = client.products[0];
+
+      // Build the updated product with new reservation date
+      const updatedProduct = {
+        ...firstProduct,
+        reservationDates: [
+          ...(firstProduct.reservationDates || []),
+          new Date(client.dateNeeded),
+        ],
+      };
+
+      // Update local product state
+      setProduct(updatedProduct);
+
+      // Update the client object with updated product array
       setUpdateClient({
         _id: client._id,
         firstName: client.firstName,
@@ -44,12 +61,11 @@ const ModalDetails = () => {
         dateNeeded: client.dateNeeded,
         status: "confirmed",
         returnDate: "",
-        products: product,
+        products: [updatedProduct], // Now has updated reservationDates
       });
     }
   }, [client, id]);
 
-  // console.log(client.products);
   const requestDate = new Date(client?.dateNeeded);
   const formatDate = (dateObj) => {
     const formattedDate = dateObj.toLocaleDateString("en-US", {
@@ -71,6 +87,20 @@ const ModalDetails = () => {
     const { success, message } = await confirmClient(id, updateClient);
     console.log("Confirmation result:", success, message);
     console.log("Data sent:", updateClient);
+
+    if (!product) {
+      console.warn("Product data not ready yet");
+      return;
+    }
+
+    const productReservationUpdate = await setProductReservation(
+      product._id,
+      product
+    );
+    console.log(
+      productReservationUpdate.success,
+      productReservationUpdate.message
+    );
   };
 
   return (

@@ -64,4 +64,19 @@ export const useProductStore = create((set) => ({
       return { success: false, message: "Unexpected error" };
     }
   },
+
+  products: [],
+  setProducts: (products) => set({ products }),
+  setProductReservation: async (id, selectedProduct) => {
+    const res = await fetch(`${API_URL}/api/products/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(selectedProduct),
+    });
+    const data = await res.json();
+    return { success: true, message: data.message };
+    if (!data.success) {
+      return { success: false, message: data.message };
+    }
+  },
 }));
