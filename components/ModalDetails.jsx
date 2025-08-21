@@ -18,6 +18,8 @@ const ModalDetails = () => {
     (state) => state.setProductReservation
   );
 
+  const [returnDate, setReturnDate] = useState("");
+
   const [updateClient, setUpdateClient] = useState({
     _id: id,
     firstName: "",
@@ -25,11 +27,12 @@ const ModalDetails = () => {
     mobile: "",
     dateNeeded: "",
     status: "confirmed",
-    returnDate: "",
+    returnDates: "",
     products: "",
   });
   const [product, setProduct] = useState({});
-  // const [reservationDates, setReservationDates] = useState([]);
+  const [reservationDates, setReservationDates] = useState([]);
+
   useEffect(() => {
     if (id) {
       fetchClient(id);
@@ -46,6 +49,10 @@ const ModalDetails = () => {
         reservationDates: [
           ...(firstProduct.reservationDates || []),
           new Date(client.dateNeeded),
+        ],
+        returnDates: [
+          ...(firstProduct.returnDates || []),
+          new Date(returnDate),
         ],
       };
 
@@ -64,7 +71,7 @@ const ModalDetails = () => {
         products: [updatedProduct], // Now has updated reservationDates
       });
     }
-  }, [client, id]);
+  }, [client, id, returnDate]);
 
   const requestDate = new Date(client?.dateNeeded);
   const formatDate = (dateObj) => {
@@ -180,12 +187,13 @@ const ModalDetails = () => {
               placeholder="Select Return Date"
               size="md"
               type="date"
-              value={updateClient.returnDate}
+              value={returnDate}
               onChange={(e) => {
                 setUpdateClient({
                   ...updateClient,
                   returnDate: e.target.value,
                 });
+                setReturnDate(e.target.value);
               }}
             />
             <Button

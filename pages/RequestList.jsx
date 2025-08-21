@@ -22,11 +22,7 @@ const RequestList = () => {
   return (
     <Container maxW={"container.xl"} display={"flex"}>
       <Box p={"4"}>
-        <Grid
-          templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
-          gap={"4"}
-          overflowY="auto"
-        >
+        <Grid templateColumns="repeat(5, 1fr)" gap={"4"} overflowY="auto">
           {pendingClients.length > 0 ? (
             pendingClients.map((client) =>
               client?._id ? (

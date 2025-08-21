@@ -75,8 +75,5 @@ export const useProductStore = create((set) => ({
     });
     const data = await res.json();
     return { success: true, message: data.message };
-    if (!data.success) {
-      return { success: false, message: data.message };
-    }
   },
 }));

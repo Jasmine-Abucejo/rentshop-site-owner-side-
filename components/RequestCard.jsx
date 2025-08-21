@@ -1,7 +1,16 @@
 import React from "react";
 import { Box, Image, Text, HStack, Button } from "@chakra-ui/react";
 
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import { useState, useEffect } from "react";
+
 const RequestCard = ({ client, confirmRequest }) => {
+  // const [selected, setSelected] = useState({
+  //   from: new Date(),
+  //   to: "Sat Aug 18 2025 00:00:00 GMT+0800 (Philippine Standard Time)",
+  // });
+
   const product = client.products[0];
   const dateSent = new Date(client.createdAt);
   const requestDate = new Date(client.dateNeeded);
