@@ -29,6 +29,7 @@ const RequestList = () => {
                 <RequestCard
                   key={client._id}
                   client={client}
+                  page={"current"}
                   confirmRequest={confirmRequest}
                 />
               ) : null

@@ -27,7 +27,7 @@ const ModalDetails = () => {
     mobile: "",
     dateNeeded: "",
     status: "confirmed",
-    returnDates: "",
+    returnDate: "",
     products: "",
   });
   const [product, setProduct] = useState({});
@@ -67,7 +67,7 @@ const ModalDetails = () => {
         mobile: client.mobile,
         dateNeeded: client.dateNeeded,
         status: "confirmed",
-        returnDate: "",
+        returnDate: new Date(returnDate),
         products: [updatedProduct], // Now has updated reservationDates
       });
     }
@@ -193,6 +193,7 @@ const ModalDetails = () => {
                   ...updateClient,
                   returnDate: e.target.value,
                 });
+
                 setReturnDate(e.target.value);
               }}
             />

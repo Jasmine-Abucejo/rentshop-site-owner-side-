@@ -19,7 +19,7 @@ const ConfirmedList = () => {
         {confirmedClients.length > 0 ? (
           confirmedClients.map((client) =>
             client?._id ? (
-              <RequestCard key={client._id} client={client} />
+              <RequestCard key={client._id} client={client} page={"confirm"} />
             ) : null
           )
         ) : (

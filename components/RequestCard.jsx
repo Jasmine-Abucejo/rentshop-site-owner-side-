@@ -5,7 +5,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useState, useEffect } from "react";
 
-const RequestCard = ({ client, confirmRequest }) => {
+const RequestCard = ({ client, confirmRequest, page }) => {
   // const [selected, setSelected] = useState({
   //   from: new Date(),
   //   to: "Sat Aug 18 2025 00:00:00 GMT+0800 (Philippine Standard Time)",
@@ -14,6 +14,8 @@ const RequestCard = ({ client, confirmRequest }) => {
   const product = client.products[0];
   const dateSent = new Date(client.createdAt);
   const requestDate = new Date(client.dateNeeded);
+  const returnDate = new Date(client.returnDate);
+  const today = new Date();
   const formatDate = (dateObj) => {
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       weekday: "long", // Monday
@@ -65,11 +67,29 @@ const RequestCard = ({ client, confirmRequest }) => {
           backgroundColor={"green.500"}
           onClick={() => confirmRequest(client._id)}
         >
-          Confirm
+          {page === "confirm" ? "Return" : "Confirm"}
         </Button>
-        <Button variant={"surface"} backgroundColor={"red.500"}>
-          Decline
-        </Button>
+        {page === "current" && (
+          <Button variant={"surface"} backgroundColor={"red.500"}>
+            Decline
+          </Button>
+        )}
+        {page === "confirm" && (
+          <Text color={"white"} fontStyle={"italic"}>
+            To be returned on :{" "}
+            <Text
+              as={"span"}
+              fontStyle={"normal"}
+              color={
+                returnDate.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)
+                  ? "red"
+                  : "green"
+              }
+            >
+              {formatDate(returnDate)}
+            </Text>
+          </Text>
+        )}
       </HStack>
     </Box>
   );
