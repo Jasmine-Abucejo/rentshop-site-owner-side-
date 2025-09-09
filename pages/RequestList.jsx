@@ -17,7 +17,9 @@ const RequestList = () => {
     fetchClients();
   }, [fetchClients]);
   const confirmRequest = (id) => {
-    navigate(`/image/${id}`, { state: { backgroundLocation: location } });
+    navigate(`/image/${id}`, {
+      state: { backgroundLocation: location, from: "requestPage" },
+    });
   };
   return (
     <Container maxW={"container.xl"} display={"flex"}>

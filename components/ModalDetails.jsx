@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Box, Text, Icon, Input, Button } from "@chakra-ui/react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useProductStore } from "../store/productStore";
 
 const ModalDetails = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
-  // console.log("useParams id:", JSON.stringify(id), "length:", id?.length);
+  const from = location.state?.from;
+
   const closeModal = () => {
     navigate(-1);
   };
@@ -18,7 +20,7 @@ const ModalDetails = () => {
     (state) => state.setProductReservation
   );
 
-  const [returnDate, setReturnDate] = useState("");
+  const [returnDate, setReturnDate] = useState(""); // if return date hasn't been set; from request page
 
   const [updateClient, setUpdateClient] = useState({
     _id: id,
@@ -29,9 +31,9 @@ const ModalDetails = () => {
     status: "confirmed",
     returnDate: "",
     products: "",
+    returned: false,
   });
   const [product, setProduct] = useState({});
-  const [reservationDates, setReservationDates] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -44,36 +46,54 @@ const ModalDetails = () => {
       const firstProduct = client.products[0];
 
       // Build the updated product with new reservation date
-      const updatedProduct = {
-        ...firstProduct,
-        reservationDates: [
-          ...(firstProduct.reservationDates || []),
-          new Date(client.dateNeeded),
-        ],
-        returnDates: [
-          ...(firstProduct.returnDates || []),
-          new Date(returnDate),
-        ],
-      };
+      if (from === "requestPage") {
+        const updatedProduct = {
+          ...firstProduct,
+          reservationDates: [
+            ...(firstProduct.reservationDates || []),
+            new Date(client.dateNeeded),
+          ],
+          returnDates: [
+            ...(firstProduct.returnDates || []),
+            new Date(returnDate),
+          ],
+        };
 
-      // Update local product state
-      setProduct(updatedProduct);
+        // Update local product state
+        setProduct(updatedProduct);
 
-      // Update the client object with updated product array
-      setUpdateClient({
-        _id: client._id,
-        firstName: client.firstName,
-        lastName: client.lastName,
-        mobile: client.mobile,
-        dateNeeded: client.dateNeeded,
-        status: "confirmed",
-        returnDate: new Date(returnDate),
-        products: [updatedProduct], // Now has updated reservationDates
-      });
+        // Update the client object with updated product array
+        setUpdateClient({
+          _id: client._id,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          mobile: client.mobile,
+          dateNeeded: client.dateNeeded,
+          status: "confirmed",
+          returnDate: new Date(returnDate),
+          products: [updatedProduct], // Now has updated reservationDates
+          returned: false,
+        });
+      } else if (from === "confirmPage") {
+        setProduct(firstProduct);
+        setUpdateClient({
+          _id: client._id,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          mobile: client.mobile,
+          dateNeeded: client.dateNeeded,
+          status: "confirmed",
+          returnDate: client.returnDate,
+          products: [firstProduct],
+          returned: true,
+        });
+      }
     }
   }, [client, id, returnDate]);
 
   const requestDate = new Date(client?.dateNeeded);
+  const dateOfReturn = new Date(client?.returnDate); //if return date already set; from confirm page
+  const dateSent = new Date(client?.createdAt);
   const formatDate = (dateObj) => {
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       weekday: "long", // Monday
@@ -95,19 +115,21 @@ const ModalDetails = () => {
     console.log("Confirmation result:", success, message);
     console.log("Data sent:", updateClient);
 
-    if (!product) {
-      console.warn("Product data not ready yet");
-      return;
-    }
+    if (from === "requestPage") {
+      if (!product) {
+        console.warn("Product data not ready yet");
+        return;
+      }
 
-    const productReservationUpdate = await setProductReservation(
-      product._id,
-      product
-    );
-    console.log(
-      productReservationUpdate.success,
-      productReservationUpdate.message
-    );
+      const productReservationUpdate = await setProductReservation(
+        product._id,
+        product
+      );
+      console.log(
+        productReservationUpdate.success,
+        productReservationUpdate.message
+      );
+    }
   };
 
   return (
@@ -177,26 +199,47 @@ const ModalDetails = () => {
               </Text>
             </Text>
             <Text fontWeight={"bold"}>
-              Date Needed:{" "}
+              Requested sent on:{" "}
+              <Text as={"span"} fontWeight={"normal"}>
+                {formatDate(dateSent)}
+              </Text>
+            </Text>
+            <Text fontWeight={"bold"}>
+              Requested for:{" "}
               <Text as={"span"} fontWeight={"normal"}>
                 {formatDate(requestDate)}
               </Text>
             </Text>
-            <Text fontWeight={"bold"}>Set Return Date: </Text>
-            <Input
-              placeholder="Select Return Date"
-              size="md"
-              type="date"
-              value={returnDate}
-              onChange={(e) => {
-                setUpdateClient({
-                  ...updateClient,
-                  returnDate: e.target.value,
-                });
+            {from === "requestPage" && (
+              <>
+                <Text fontWeight={"bold"}>Set Return Date: </Text>
+                <Input
+                  placeholder="Select Return Date"
+                  size="md"
+                  type="date"
+                  value={returnDate}
+                  onChange={(e) => {
+                    setUpdateClient({
+                      ...updateClient,
+                      returnDate: e.target.value,
+                    });
 
-                setReturnDate(e.target.value);
-              }}
-            />
+                    setReturnDate(e.target.value);
+                  }}
+                />
+              </>
+            )}
+            {from === "confirmPage" && (
+              <>
+                <Text fontWeight={"bold"}>
+                  Return Date:{" "}
+                  <Text as={"span"} fontWeight={"normal"}>
+                    {formatDate(dateOfReturn)}
+                  </Text>
+                </Text>
+              </>
+            )}
+
             <Button
               onClick={() => {
                 console.log("clicked");
