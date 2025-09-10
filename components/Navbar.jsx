@@ -67,6 +67,24 @@ const Navbar = () => {
             </Text>
           </Box>
         </Link>
+        <Link to={"/products"}>
+          <Box
+            p={"2"}
+            borderRadius={"50px"}
+            boxShadow={"lg"}
+            bgColor={
+              location.pathname === "/products" ? "pink.500" : "pink.300"
+            }
+            flex={"1"}
+          >
+            <Text>
+              All Products{" "}
+              <Text as={"span"} fontSize={"22"}>
+                🛒
+              </Text>
+            </Text>
+          </Box>
+        </Link>
       </Flex>
     </Container>
   );

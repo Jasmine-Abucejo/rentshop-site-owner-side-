@@ -5,6 +5,7 @@ import RequestList from "../pages/RequestList";
 import ConfirmedList from "../pages/ConfirmedList";
 import DeclinedList from "../pages/DeclinedList";
 import ModalDetails from "../components/ModalDetails";
+import ProductList from "../pages/ProductList";
 
 function App() {
   const location = useLocation();
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<RequestList />} />
           <Route path="/declined-list" element={<DeclinedList />} />
           <Route path="/confirmed-list" element={<ConfirmedList />} />
+          <Route path="/products" element={<ProductList />} />
         </Routes>
         {background && (
           <Routes>
