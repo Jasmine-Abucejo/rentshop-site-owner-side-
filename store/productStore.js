@@ -30,8 +30,8 @@ export const useProductStore = create((set) => ({
         };
       }
 
-      console.log("Sending PUT request to:", `${API_URL}/api/clients/${id}`);
-      console.log("Payload:", selectedClient);
+      // console.log("Sending PUT request to:", `${API_URL}/api/clients/${id}`);
+      // console.log("Payload:", selectedClient);
 
       const res = await fetch(`${API_URL}/api/clients/${id}`, {
         method: "PUT",
@@ -46,7 +46,7 @@ export const useProductStore = create((set) => ({
       }
 
       const data = await res.json();
-      console.log("Server response:", data);
+      // console.log("Server response:", data);
 
       if (!data.success) {
         return { success: false, message: "ERROR" };
@@ -80,7 +80,17 @@ export const useProductStore = create((set) => ({
     const res = await fetch(`${API_URL}/api/products`);
 
     const data = await res.json();
-    console.log(data);
+    // console.log(data);
     set({ products: data.products });
+  },
+  addProduct: async (newProduct) => {
+    const res = await fetch(`${API_URL}/api/products/add-product`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newProduct),
+    });
+    const data = await res.json();
+    set((products) => ({ products: [...state.products, data.data] }));
+    return { success: data.success, message: data.message };
   },
 }));

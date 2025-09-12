@@ -6,7 +6,7 @@ import { Box, Image, Text, HStack, Button } from "@chakra-ui/react";
 const ProductCard = ({ viewDetails, item, className = "" }) => {
   const reservationDates = item.reservationDates;
   const returnDates = item.returnDates;
-  console.log(returnDates);
+  // console.log(returnDates);
   const formatDate = (dateObj) => {
     // Ensure it's a Date object
     const date = new Date(dateObj);
@@ -25,9 +25,9 @@ const ProductCard = ({ viewDetails, item, className = "" }) => {
 
   return (
     <Box borderWidth={"2px"} borderColor={"pink.400"}>
-      <Image src={item.image} />
+      <Image src={item.image} minHeight={"70%"} width={"100%"} />
       <Box margin={"2"}>
-        <HStack as={"Flex"} justifyContent={"space-between"}>
+        <HStack justifyContent={"space-between"}>
           <Text fontWeight={"bold"} color={"white"}>
             {item.productName}
           </Text>
@@ -35,7 +35,7 @@ const ProductCard = ({ viewDetails, item, className = "" }) => {
             {item.price}
           </Text>
         </HStack>
-        <HStack as={"Flex"} justifyContent={"space-between"}>
+        <HStack justifyContent={"space-between"}>
           <Text fontWeight={"normal"} color={"white"} fontStyle={"italic"}>
             Color:{" "}
             <Text
