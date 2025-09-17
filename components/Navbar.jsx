@@ -85,6 +85,22 @@ const Navbar = () => {
             </Text>
           </Box>
         </Link>
+        <Link to={"/history"}>
+          <Box
+            p={"2"}
+            borderRadius={"50px"}
+            boxShadow={"lg"}
+            bgColor={location.pathname === "/history" ? "pink.500" : "pink.300"}
+            flex={"1"}
+          >
+            <Text>
+              Full History{" "}
+              <Text as={"span"} fontSize={"22"}>
+                📜
+              </Text>
+            </Text>
+          </Box>
+        </Link>
       </Flex>
     </Container>
   );

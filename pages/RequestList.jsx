@@ -16,9 +16,13 @@ const RequestList = () => {
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
-  const confirmRequest = (id) => {
+  const confirmRequest = (id, buttonClicked) => {
     navigate(`/image/${id}`, {
-      state: { backgroundLocation: location, from: "requestPage" },
+      state: {
+        backgroundLocation: location,
+        from: "requestPage",
+        buttonClicked: buttonClicked,
+      },
     });
   };
   return (

@@ -65,18 +65,22 @@ const RequestCard = ({ client, confirmRequest, page }) => {
         <Button
           variant={"surface"}
           backgroundColor={"green.500"}
-          onClick={() => confirmRequest(client._id)}
+          onClick={() => confirmRequest(client._id, "confirm")}
         >
           {page === "confirm" ? "Return" : "Confirm"}
         </Button>
         {page === "current" && (
-          <Button variant={"surface"} backgroundColor={"red.500"}>
+          <Button
+            variant={"surface"}
+            backgroundColor={"red.500"}
+            onClick={() => confirmRequest(client._id, "decline")}
+          >
             Decline
           </Button>
         )}
         {page === "confirm" && (
           <Text color={"white"} fontStyle={"italic"}>
-            To be returned on :{" "}
+            Should be returned by:{" "}
             <Text
               as={"span"}
               fontStyle={"normal"}

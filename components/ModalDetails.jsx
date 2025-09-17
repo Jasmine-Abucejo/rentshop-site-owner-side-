@@ -10,6 +10,8 @@ const ModalDetails = () => {
   const { id } = useParams();
   const from = location.state?.from;
 
+  const [buttonClicked, setButtonClicked] = useState("");
+
   const closeModal = () => {
     navigate(-1);
   };
@@ -61,19 +63,34 @@ const ModalDetails = () => {
 
         // Update local product state
         setProduct(updatedProduct);
+        setButtonClicked(location.state?.buttonClicked);
 
+        if (buttonClicked === "confirm") {
+          setUpdateClient({
+            _id: client._id,
+            firstName: client.firstName,
+            lastName: client.lastName,
+            mobile: client.mobile,
+            dateNeeded: client.dateNeeded,
+            status: "confirmed",
+            returnDate: new Date(returnDate),
+            products: [updatedProduct], // Now has updated reservationDates
+            returned: false,
+          });
+        } else if (buttonClicked === "decline") {
+          setUpdateClient({
+            _id: client._id,
+            firstName: client.firstName,
+            lastName: client.lastName,
+            mobile: client.mobile,
+            dateNeeded: client.dateNeeded,
+            status: "declined",
+            returnDate: new Date(returnDate),
+            products: [updatedProduct], // Now has updated reservationDates
+            returned: false,
+          });
+        }
         // Update the client object with updated product array
-        setUpdateClient({
-          _id: client._id,
-          firstName: client.firstName,
-          lastName: client.lastName,
-          mobile: client.mobile,
-          dateNeeded: client.dateNeeded,
-          status: "confirmed",
-          returnDate: new Date(returnDate),
-          products: [updatedProduct], // Now has updated reservationDates
-          returned: false,
-        });
       } else if (from === "confirmPage") {
         setProduct(firstProduct);
         setUpdateClient({
@@ -82,10 +99,9 @@ const ModalDetails = () => {
           lastName: client.lastName,
           mobile: client.mobile,
           dateNeeded: client.dateNeeded,
-          status: "confirmed",
+          status: "returned",
           returnDate: client.returnDate,
           products: [firstProduct],
-          returned: true,
         });
       }
     }
@@ -112,8 +128,8 @@ const ModalDetails = () => {
     }
 
     const { success, message } = await confirmClient(id, updateClient);
-    console.log("Confirmation result:", success, message);
-    console.log("Data sent:", updateClient);
+    // console.log("Confirmation result:", success, message);
+    // console.log("Data sent:", updateClient);
 
     if (from === "requestPage") {
       if (!product) {
@@ -125,11 +141,12 @@ const ModalDetails = () => {
         product._id,
         product
       );
-      console.log(
-        productReservationUpdate.success,
-        productReservationUpdate.message
-      );
+      //  console.log(
+      //   productReservationUpdate.success,
+      //   productReservationUpdate.message
+      // );
     }
+    closeModal();
   };
 
   return (
@@ -172,7 +189,14 @@ const ModalDetails = () => {
           gap={"4"}
         >
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            Are you sure you want to confirm this reservation?
+            Are you sure you want to{" "}
+            {from === "requestPage" &&
+              buttonClicked === "confirm" &&
+              "confirm this reservation?"}
+            {from === "requestPage" &&
+              buttonClicked === "decline" &&
+              "decline this reservation?"}
+            {from === "confirmPage" && "return this item?"}
           </Text>
           <Box
             borderWidth={"4px"}
@@ -210,7 +234,7 @@ const ModalDetails = () => {
                 {formatDate(requestDate)}
               </Text>
             </Text>
-            {from === "requestPage" && (
+            {from === "requestPage" && buttonClicked === "confirm" && (
               <>
                 <Text fontWeight={"bold"}>Set Return Date: </Text>
                 <Input
@@ -242,11 +266,16 @@ const ModalDetails = () => {
 
             <Button
               onClick={() => {
-                console.log("clicked");
                 saveConfirmation();
               }}
             >
-              Confirm
+              {from === "requestPage" &&
+                buttonClicked === "confirm" &&
+                "Confirm"}
+              {from === "requestPage" &&
+                buttonClicked === "decline" &&
+                "Decline"}
+              {from === "confirmPage" && "Return"}
             </Button>
           </Box>
         </Box>
