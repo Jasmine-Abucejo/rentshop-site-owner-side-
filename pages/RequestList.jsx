@@ -9,13 +9,14 @@ const RequestList = () => {
   const location = useLocation();
   const clients = useProductStore((state) => state.clients);
   const fetchClients = useProductStore((state) => state.fetchClients);
-  const pendingClients = Array.isArray(clients)
-    ? clients.filter((client) => client?.status === "pending request")
-    : [];
+  const [status, setStatus] = useState("pending request");
+  // const pendingClients = Array.isArray(clients)
+  //   ? clients.filter((client) => client?.status === "pending request")
+  //   : [];
 
   useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
+    fetchClients({ status });
+  }, [status, fetchClients]);
   const confirmRequest = (id, buttonClicked) => {
     navigate(`/image/${id}`, {
       state: {
@@ -29,8 +30,8 @@ const RequestList = () => {
     <Container maxW={"container.xl"} display={"flex"}>
       <Box p={"4"}>
         <Grid templateColumns="repeat(5, 1fr)" gap={"4"} overflowY="auto">
-          {pendingClients.length > 0 ? (
-            pendingClients.map((client) =>
+          {clients.length > 0 ? (
+            clients.map((client) =>
               client?._id ? (
                 <RequestCard
                   key={client._id}

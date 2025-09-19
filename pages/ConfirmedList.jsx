@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, Box, Grid } from "@chakra-ui/react";
 import RequestCard from "../components/RequestCard";
 import { useProductStore } from "../store/productStore";
@@ -10,38 +10,27 @@ const ConfirmedList = () => {
   const clients = useProductStore((state) => state.clients);
   const fetchClients = useProductStore((state) => state.fetchClients);
 
-  const confirmedClients = Array.isArray(clients)
-    ? clients.filter(
-        (client) => client?.status === "confirmed" && !client?.returned
-      )
-    : [];
+  const [status, setStatus] = useState("confirmed");
+  const [returned, setReturned] = useState(false);
+  // const confirmedClients = Array.isArray(clients)
+  //   ? clients.filter(
+  //       (client) => client?.status === "confirmed" && !client?.returned
+  //     )
+  //   : [];
   const returnProduct = (id) => {
     navigate(`/image/${id}`, {
       state: { backgroundLocation: location, from: "confirmPage" },
     });
   };
-  // const [returnee, setReturnee] = useState({
-  //   _id: id,
-  //   firstName: "",
-  //   lastName: "",
-  //   mobile: "",
-  //   dateNeeded: "",
-  //   status: "",
-  //   returnDate: "",
-  //   products: "",
-  //   returned: true,
-  // });
-  // const clientReturn = async () => {
 
-  // }
   useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
+    fetchClients({ status, returned });
+  }, [status, returned, fetchClients]);
   return (
     <Box p={"4"}>
       <Grid templateColumns={"repeat(4, 1fr)"}>
-        {confirmedClients.length > 0 ? (
-          confirmedClients.map((client) =>
+        {clients.length > 0 ? (
+          clients.map((client) =>
             client?._id ? (
               <RequestCard
                 key={client._id}

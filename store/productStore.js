@@ -3,15 +3,25 @@ import API_URL from "../src/api";
 
 export const useProductStore = create((set) => ({
   clients: [],
+  groupedClients: [],
   client: null,
   loading: false,
   error: null,
   setClients: (clients) => set({ clients }),
 
-  fetchClients: async () => {
-    const res = await fetch(`${API_URL}/api/clients`);
+  fetchClients: async (filterOptions = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(filterOptions).forEach(([key, value]) => {
+      if (value) query.append(key, value);
+    });
+    const res = await fetch(`${API_URL}/api/clients?${query.toString()}`);
     const data = await res.json();
     set({ clients: data.data });
+  },
+  fetchClientsByDate: async () => {
+    const res = await fetch(`${API_URL}/api/clients`);
+    const data = await res.json();
+    set({ groupedClients: data.data });
   },
   fetchClient: async (id) => {
     set({ loading: true, error: null });

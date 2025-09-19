@@ -17,14 +17,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 const RequestList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const clients = useProductStore((state) => state.clients);
-  const fetchClients = useProductStore((state) => state.fetchClients);
-  const pendingClients = Array.isArray(clients)
-    ? clients.filter((client) => client?.status === "pending request")
-    : [];
-  const completedClients = Array.isArray(clients)
-    ? clients.filter((client) => client?.status === "returned")
-    : [];
+  const groupedClients = useProductStore((state) => state.groupedClients);
+  const fetchClientsByDate = useProductStore(
+    (state) => state.fetchClientsByDate
+  );
+  // const pendingClients = Array.isArray(clients)
+  //   ? clients.filter((client) => client?.status === "pending request")
+  //   : [];
+  // const completedClients = Array.isArray(clients)
+  //   ? clients.filter((client) => client?.status === "returned")
+  //   : [];
   const formatDate = (dateObj) => {
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       weekday: "long", // Monday
@@ -36,8 +38,8 @@ const RequestList = () => {
     return formattedDate;
   };
   useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
+    fetchClientsByDate();
+  }, [fetchClientsByDate]);
 
   return (
     <Container maxW={"container.xl"} display={"flex"} flexDir={"column"}>
@@ -45,8 +47,8 @@ const RequestList = () => {
         Finished Transactions:{" "}
       </Text>
       <Accordion w="100%" allowToggle>
-        {completedClients.length > 0 ? (
-          completedClients.map((client) =>
+        {groupedClients.length > 0 ? (
+          groupedClients.map((client) =>
             client?._id ? (
               <AccordionItem key={client._id}>
                 <h2>
@@ -67,10 +69,13 @@ const RequestList = () => {
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4} textColor={"white"}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
+                  <Box key={client._id} p="2" borderBottom="1px solid #ccc">
+                    <Text fontWeight="bold">{client.name}</Text>
+                    {client.products.length > 0 &&
+                      client.products.map((p) => (
+                        <Text key={p._id}>- {p.productName}</Text>
+                      ))}
+                  </Box>
                 </AccordionPanel>
               </AccordionItem>
             ) : null
