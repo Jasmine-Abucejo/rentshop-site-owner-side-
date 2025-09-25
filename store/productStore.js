@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import API_URL from "../src/api";
+import { data } from "react-router-dom";
 
 export const useProductStore = create((set) => ({
   clients: [],
@@ -19,9 +20,15 @@ export const useProductStore = create((set) => ({
     set({ clients: data.data });
   },
   fetchClientsByDate: async () => {
-    const res = await fetch(`${API_URL}/api/clients`);
-    const data = await res.json();
-    set({ groupedClients: data.data });
+    try {
+      const res = await fetch(`${API_URL}/api/clients/grouped`);
+      const data = await res.json();
+      set({ groupedClients: data.data });
+      console.log(data.message);
+      console.log(data.data);
+    } catch (error) {
+      console.log(data.message);
+    }
   },
   fetchClient: async (id) => {
     set({ loading: true, error: null });
