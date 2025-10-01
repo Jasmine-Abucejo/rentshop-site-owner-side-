@@ -16,7 +16,7 @@ const RequestList = () => {
 
   useEffect(() => {
     fetchClients({ status });
-  }, [status, fetchClients]);
+  }, [status, fetchClients, location]);
   const confirmRequest = (id, buttonClicked) => {
     navigate(`/image/${id}`, {
       state: {
@@ -27,26 +27,24 @@ const RequestList = () => {
     });
   };
   return (
-    <Container maxW={"container.xl"} display={"flex"}>
-      <Box p={"4"}>
-        <Grid templateColumns="repeat(5, 1fr)" gap={"4"} overflowY="auto">
-          {clients.length > 0 ? (
-            clients.map((client) =>
-              client?._id ? (
-                <RequestCard
-                  key={client._id}
-                  client={client}
-                  page={"current"}
-                  confirmRequest={confirmRequest}
-                />
-              ) : null
-            )
-          ) : (
-            <Text color={"pink.400"}>No clients in the list yet</Text>
-          )}
-        </Grid>
-      </Box>
-    </Container>
+    <Box p={"4"}>
+      <Grid templateColumns={"repeat(5, 1fr)"} gap={"2"}>
+        {clients.length > 0 ? (
+          clients.map((client) =>
+            client?._id ? (
+              <RequestCard
+                key={client._id}
+                client={client}
+                page={"current"}
+                confirmRequest={confirmRequest}
+              />
+            ) : null
+          )
+        ) : (
+          <Text color={"pink.400"}>No clients in the list yet</Text>
+        )}
+      </Grid>
+    </Box>
   );
 };
 export default RequestList;

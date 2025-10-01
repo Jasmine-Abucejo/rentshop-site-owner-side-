@@ -15,11 +15,11 @@ const DeclinedList = () => {
   }, [status, fetchClients]);
   return (
     <Box p={"4"}>
-      <Grid templateColumns={"repeat(4, 1fr)"}>
+      <Grid templateColumns={"repeat(5, 1fr)"}>
         {clients.length > 0 ? (
           clients.map((client) =>
             client?._id ? (
-              <RequestCard key={client._id} client={client} />
+              <RequestCard key={client._id} client={client} page={"decline"} />
             ) : null
           )
         ) : (

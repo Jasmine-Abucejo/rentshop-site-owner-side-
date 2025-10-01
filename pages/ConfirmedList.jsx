@@ -25,10 +25,10 @@ const ConfirmedList = () => {
 
   useEffect(() => {
     fetchClients({ status, returned });
-  }, [status, returned, fetchClients]);
+  }, [status, returned, fetchClients, location]);
   return (
     <Box p={"4"}>
-      <Grid templateColumns={"repeat(4, 1fr)"}>
+      <Grid templateColumns={"repeat(5, 1fr)"} gap={"2"}>
         {clients.length > 0 ? (
           clients.map((client) =>
             client?._id ? (
