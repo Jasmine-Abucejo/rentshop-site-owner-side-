@@ -28,7 +28,7 @@ const RequestCard = ({ client, confirmRequest, page }) => {
   };
 
   return (
-    <Box borderWidth={"2px"} borderColor={"pink.400"} height={"auto"}>
+    <Box borderWidth={"2px"} borderColor={"pink.400"} maxHeight={"90%"}>
       <Image src={product.image} height={"30%"} width={"100%"} />
       <Box margin={"2"}>
         <Text fontWeight={"bold"} color={"pink.400"}>

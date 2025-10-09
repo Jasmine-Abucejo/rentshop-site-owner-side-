@@ -25,7 +25,7 @@ const ProductCard = ({ viewDetails, item, className = "" }) => {
 
   return (
     <Box borderWidth={"2px"} borderColor={"pink.400"}>
-      <Image src={item.image} minHeight={"70%"} width={"100%"} />
+      <Image src={item.image} height={"70%"} width={"100%"} />
       <Box margin={"2"}>
         <HStack justifyContent={"space-between"}>
           <Text fontWeight={"bold"} color={"white"}>
